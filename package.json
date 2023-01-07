@@ -10,7 +10,6 @@
     "hardhat": "^2.9.0",
     "hardhat-deploy": "^0.10.5",
     "hardhat-gas-reporter": "^1.0.7",
-    "prettier": "^2.8.2",
     "solidity-coverage": "^0.7.18"
   },
   "dependencies": {
@@ -25,7 +24,6 @@
     "mime": "^3.0.0",
     "nft.storage": "^6.0.1",
     "path": "^0.12.7",
-    "prettier-plugin-solidity": "^1.1.1",
     "remove": "^0.1.5",
     "solhint": "^3.3.7"
   },

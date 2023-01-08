@@ -1,5 +1,5 @@
 const { network, ethers } = require("hardhat");
-const { devChains } = require("../helper-hardhat.config");
+const { devChains } = require("../helper-hardhat-config");
 
 const BASE_FEE = ethers.utils.parseEther("0.25");
 const GAS_PRICE_LINK = 1e9;
@@ -22,3 +22,5 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
 		log("-------------------------------------------------------");
 	}
 };
+
+module.exports.tags = ["all", "randipfs", "mocks"];

@@ -1,6 +1,23 @@
 const { network, ethers } = require("hardhat");
 const { devChains, networkConfig } = require("../helper-hardhat-config");
 const { verify } = require("../utils/verify");
+const { storeNFTs } = require("../utils/uploadToNftStorage");
+
+const imagesLocation = "./images/randomNft";
+
+const metadataTemplate = {
+	name: "",
+	description: "",
+	image: "",
+
+	// not supported in nft Storage
+	// attributes: [
+	//     {
+	//         trait_type: "Cuteness",
+	//         value: 100,
+	//     },
+	// ],
+};
 
 module.exports = async ({ getNamedAccounts, deployments }) => {
 	const { deploy, log } = deployments;
@@ -24,15 +41,24 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
 		subId = networkConfig[chainId].subId;
 	}
 
-	const { keyHash, callbackGasLimit, mintFee } = networkConfig[chainId];
-	const arguements = [
-		VRFCoordinatorV2Address,
-		keyHash,
-		subId,
-		callbackGasLimit,
-		"hey" /*dog token uris*/,
-		mintFee,
-	];
+	await storeNFTs(imagesLocation);
+
+	// const { keyHash, callbackGasLimit, mintFee } = networkConfig[chainId];
+	// const arguements = [
+	// 	VRFCoordinatorV2Address,
+	// 	keyHash,
+	// 	subId,
+	// 	callbackGasLimit,
+	// 	"hey" /*dog token uris*/,
+	// 	mintFee,
+	// ];
 };
 
-module.exports.tags = ["all", "mock"];
+const handleTokenUris = async () => {
+	tokenUris = [];
+    
+
+	return tokenUris;
+};
+
+module.exports.tags = ["all", "randomipfs", "main"];

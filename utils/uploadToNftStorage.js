@@ -1,11 +1,11 @@
 // Import the NFTStorage class and File constructor from the 'nft.storage' package
-const { NFTStorage, File } = require("nft.storage")
-const mime = require("mime")
-const fs = require("fs")
-const path = require("path")
-require("dotenv").config()
+const { NFTStorage, File } = require("nft.storage");
+const mime = require("mime");
+const fs = require("fs");
+const path = require("path");
+require("dotenv").config();
 
-const NFT_STORAGE_KEY = process.env.NFT_STORAGE_KEY
+const NFT_STORAGE_KEY = process.env.NFT_STORAGE_KEY;
 
 /**
  * Reads an image file from `imagePath` and stores an NFT with the given name and description.
@@ -14,23 +14,27 @@ const NFT_STORAGE_KEY = process.env.NFT_STORAGE_KEY
  * @param {string} description a text description for the NFT
  */
 async function storeNFTs(imagesPath) {
-    const fullImagesPath = path.resolve(imagesPath)
-    const files = fs.readdirSync(fullImagesPath)
-    let responses = []
-    for (fileIndex in files) {
-        const image = await fileFromPath(`${fullImagesPath}/${files[fileIndex]}`)
-        const nftstorage = new NFTStorage({ token: NFT_STORAGE_KEY })
-        const dogName = files[fileIndex].replace(".png", "")
-        const response = await nftstorage.store({
-            image,
-            name: dogName,
-            description: `An adorable ${dogName}`,
-            // Currently doesn't support attributes 😔
-            // attributes: [{ trait_type: "cuteness", value: 100 }],
-        })
-        responses.push(response)
-    }
-    return responses
+	const fullImagesPath = path.resolve(imagesPath);
+	const files = fs.readdirSync(fullImagesPath);
+	let responses = [];
+	console.log("Uploading to NFT Storage!");
+	for (fileIndex in files) {
+		const image = await fileFromPath(
+			`${fullImagesPath}/${files[fileIndex]}`
+		);
+		const nftstorage = new NFTStorage({ token: NFT_STORAGE_KEY });
+		const nftName = files[fileIndex].replace(".png", "");
+		const response = await nftstorage.store({
+			image,
+			name: nftName,
+			description: `An adorable ${nftName}`,
+			// Currently doesn't support attributes 😔
+			// attributes: [{ trait_type: "cuteness", value: 100 }],
+		});
+		responses.push(response);
+	}
+	console.log("Upload Done");
+	return responses;
 }
 
 /**
@@ -41,11 +45,11 @@ async function storeNFTs(imagesPath) {
  * @returns {File} a File object containing the file content
  */
 async function fileFromPath(filePath) {
-    const content = await fs.promises.readFile(filePath)
-    const type = mime.getType(filePath)
-    return new File([content], path.basename(filePath), { type })
+	const content = await fs.promises.readFile(filePath);
+	const type = mime.getType(filePath);
+	return new File([content], path.basename(filePath), { type });
 }
 
 module.exports = {
-    storeNFTs,
-}
+	storeNFTs,
+};

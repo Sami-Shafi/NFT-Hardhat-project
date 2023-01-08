@@ -5,19 +5,15 @@ import "base64-sol/base64.sol";
 
 pragma solidity ^0.8.7;
 
-error RandomIpfsNFT_RangeOutOfBounds();
-error RandomIpfsNFT_NeedMoreETHSent();
-error RandomIpfsNFT_TransferFailed();
-
 contract DynamicSvgNFT is ERC721 {
     // state variable
     AggregatorV3Interface internal immutable i_priceFeed;
     uint256 private s_tokenCounter;
-    string private i_lowSvgUri;
-    string private i_highSvgUri;
-    string private constant BASE_64_SVG_PREFIX = "data:image/svg+xml;base64";
+    string private s_lowSvgUri;
+    string private s_highSvgUri;
+    string private constant BASE_64_SVG_PREFIX = "data:image/svg+xml;base64,";
 
-    // eventsq
+    // events
     event NFTMinted(uint256 indexed tokenId, int256 highValue);
 
     // mapping
@@ -30,8 +26,8 @@ contract DynamicSvgNFT is ERC721 {
         string memory highSvg
     ) ERC721("Dynamic Svg NFT", "DSN") {
         s_tokenCounter = 0;
-        i_lowSvgUri = svgToImageUri(lowSvg);
-        i_highSvgUri = svgToImageUri(highSvg);
+        s_lowSvgUri = svgToImageUri(lowSvg);
+        s_highSvgUri = svgToImageUri(highSvg);
         i_priceFeed = AggregatorV3Interface(priceFeedAddress);
     }
 
@@ -47,8 +43,8 @@ contract DynamicSvgNFT is ERC721 {
 
     function mintNft(int256 highValue) public {
         s_tokenIdToHighValue[s_tokenCounter] = highValue;
-        s_tokenCounter = s_tokenCounter + 1;
         _safeMint(msg.sender, s_tokenCounter);
+        s_tokenCounter = s_tokenCounter + 1;
 
         emit NFTMinted(s_tokenCounter, highValue);
     }
@@ -62,11 +58,14 @@ contract DynamicSvgNFT is ERC721 {
     ) public view override returns (string memory) {
         require(_exists(tokenId), "URI Query for nonexistent token");
 
+        // answer = 1200$
         (, int price, , , ) = i_priceFeed.latestRoundData();
-        string memory imageURI = i_lowSvgUri;
-        if (price >= s_tokenIdToHighValue[s_tokenCounter]) {
-            imageURI = i_highSvgUri;
+        string memory imageURI = s_lowSvgUri;
+
+        if (price >= s_tokenIdToHighValue[tokenId]) {
+            imageURI = s_highSvgUri;
         }
+
         return
             string(
                 abi.encodePacked(
@@ -75,17 +74,31 @@ contract DynamicSvgNFT is ERC721 {
                         bytes(
                             abi.encodePacked(
                                 '{"name":"',
-                                name(),
-                                '"',
-                                '"description":"An NFT that changes based on the chainlink feed."',
-                                '"attributes": [{"trait_type": "coolness", "value": 100}]',
-                                '"image":"',
+                                name(), // You can add whatever name here
+                                '", "description":"An NFT that changes based on the Chainlink Feed", ',
+                                '"attributes": [{"trait_type": "coolness", "value": 100}], "image":"',
                                 imageURI,
-                                '"'
+                                '"}'
                             )
                         )
                     )
                 )
             );
+    }
+
+    function getLowSvg() public view returns (string memory) {
+        return s_lowSvgUri;
+    }
+
+    function getHighSvg() public view returns (string memory) {
+        return s_highSvgUri;
+    }
+
+    function getPriceFeed() public view returns (AggregatorV3Interface) {
+        return i_priceFeed;
+    }
+
+    function getTokenCounter() public view returns (uint256) {
+        return s_tokenCounter;
     }
 }

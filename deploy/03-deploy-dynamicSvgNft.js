@@ -9,10 +9,10 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
 	const { deployer } = await getNamedAccounts();
 	const chainId = network.config.chainId;
 
-	let priceFeedAddress;
+	let priceFeedAddress, MockV3Aggregator;
 
 	if (devChains.includes(network.name)) {
-		const MockV3Aggregator = await ethers.getContract("MockV3Aggregator");
+		MockV3Aggregator = await ethers.getContract("MockV3Aggregator");
 		priceFeedAddress = MockV3Aggregator.address;
 	} else {
 		priceFeedAddress = networkConfig[chainId].ethUsdPriceFeed;

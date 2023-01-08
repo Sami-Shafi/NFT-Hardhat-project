@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+
 import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
 import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
 
@@ -82,6 +83,7 @@ contract RandomIpfsNFT is VRFConsumerBaseV2, ERC721URIStorage, Ownable {
         uint256 moddedRng = randomWords[0] % MAX_CHANCE_VAL;
 
         Breed dogBreed = getBreed(moddedRng);
+        s_tokenCounter = s_tokenCounter + 1;
         _safeMint(nftOwner, tokenCounter);
         _setTokenURI(tokenCounter, s_dogTokenUris[uint256(dogBreed)]);
 
@@ -94,7 +96,8 @@ contract RandomIpfsNFT is VRFConsumerBaseV2, ERC721URIStorage, Ownable {
         for (uint256 i = 0; i < chanceArray.length; i++) {
             if (
                 moddedRng >= calculativeSum &&
-                moddedRng < calculativeSum + chanceArray[i]
+                moddedRng < calculativeSum + chanceArray[i] &&
+                moddedRng < 100
             ) {
                 return Breed(i);
             }

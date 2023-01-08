@@ -34,7 +34,8 @@ async function storeNFTs(imagesPath) {
 		responses.push(response);
 	}
 	console.log("Upload Done");
-	return responses;
+
+	return { responses, files };
 }
 
 /**

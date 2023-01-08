@@ -40,6 +40,7 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
 		subId = networkConfig[chainId].subId;
 	}
 
+	// deploy
 	const { keyHash, callbackGasLimit, mintFee } = networkConfig[chainId];
 	const arguments = [
 		VRFCoordinatorV2Address,
@@ -50,18 +51,18 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
 		mintFee,
 	];
 
+	log("-------------------------------------------------------");
 	const randomIpfsNft = await deploy("RandomIpfsNFT", {
 		from: deployer,
 		args: arguments,
 		log: true,
 		waitConfirmations: network.config.blockConfirmations || 1,
 	});
+	log("Mocks Deployed!");
+	log("-------------------------------------------------------");
 
 	if (chainId == 31337) {
-		await VRFCoordinatorV2Mock.addConsumer(
-			subId,
-			randomIpfsNft.address
-		);
+		await VRFCoordinatorV2Mock.addConsumer(subId, randomIpfsNft.address);
 	}
 
 	// Verify the deployment

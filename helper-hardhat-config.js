@@ -22,6 +22,8 @@ const networkConfig = {
 
 const DECIMALS = "18";
 const INITIAL_PRICE = "200000000000000000000";
+const BASE_FEE = ethers.utils.parseEther("0.25");
+const GAS_PRICE_LINK = 1e9;
 const devChains = ["hardhat", "localhost"];
 
 module.exports = {
@@ -29,4 +31,6 @@ module.exports = {
 	devChains,
 	DECIMALS,
 	INITIAL_PRICE,
+	BASE_FEE,
+	GAS_PRICE_LINK,
 };
